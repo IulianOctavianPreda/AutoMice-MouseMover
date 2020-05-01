@@ -13,14 +13,15 @@ class Pattern(Enum):
     Random = 3
 
 # TODO add timer for mouse movement, if the mouse was moved in the last x seconds do not trigger the automovement, or stop it if it was started
+# TODO if the pressed key is ctrl, shift, alt add all 3 versions of it to the list
 
 
 class UserInput():
     mouseController = mouse.Controller()
 
-    keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(char='m')}
-    currentlyPressedKeys = []
-    isOn = False
+    keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(vk=65)}
+    currentlyPressedKeys = set()
+    threadFlag = threading.Event()
 
     distance = 10
     sleepTime = 1
@@ -34,38 +35,35 @@ class UserInput():
             listener.join()
 
     def onPress(self, key):
-        self.addKey(key)
+        self.addKey(self.get_vk(key))
         if(self.isMatchingCombination()):
-            self.currentlyPressedKeys.clear()
-            if(self.isOn):
-                self.isOn = False
+            if(self.threadFlag.is_set()):
+                print("off")
+                self.threadFlag.clear()
             else:
-                self.isOn = True
+                print("on")
+                self.threadFlag.set()
 
     def onRelease(self, key):
-        self.removeKey(key)
+        self.removeKey(self.get_vk(key))
+
+    def get_vk(self, key):
+        return key.vk if hasattr(key, 'vk') else key.value.vk
 
     def addKey(self, keyPressed):
-        if(keyPressed in self.currentlyPressedKeys):
-            return
-        if(keyPressed in self.keyCombination):
-            self.currentlyPressedKeys.append(keyPressed)
+        self.currentlyPressedKeys.add(keyPressed)
 
     def removeKey(self, keyPressed):
-        if(keyPressed in self.currentlyPressedKeys):
-            return
-        if(keyPressed in self.keyCombination):
-            self.currentlyPressedKeys.remove(keyPressed)
+        self.currentlyPressedKeys.remove(keyPressed)
 
     def isMatchingCombination(self):
-        if all(k in self.currentlyPressedKeys for k in self.keyCombination):
-            return True
-        else:
-            return False
+        return all(self.get_vk(k) in self.currentlyPressedKeys for k in self.keyCombination)
 
     def moveMouseAction(self):
+        print("thread")
         hasMoved = False
-        while self.isOn:
+        while self.threadFlag.is_set():
+            print("thread start")
             self.patternMatcher(hasMoved)
             time.sleep(self.sleepTime)
 
