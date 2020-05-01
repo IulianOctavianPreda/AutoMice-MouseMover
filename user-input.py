@@ -1,11 +1,5 @@
-# needs to have a change-able shortcut
-# input number of pixels to move, and the period, and how fast
-# patterns
-# start-up?
-# from pynput.keyboard import Key, KeyCode, Controller, Listener
 from pynput import keyboard, mouse
 
-import pyautogui as pg
 import time
 import threading
 from random import seed
@@ -18,11 +12,13 @@ class Pattern(Enum):
     Horizontal = 2
     Random = 3
 
+# TODO add timer for mouse movement, if the mouse was moved in the last x seconds do not trigger the automovement, or stop it if it was started
+
 
 class UserInput():
-    pg.FAILSAFE = False
+    mouseController = mouse.Controller()
 
-    keyCombination = {keyboard.Key.ctrl, keyboard.KeyCode(char='m')}
+    keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(char='m')}
     currentlyPressedKeys = []
     isOn = False
 
@@ -34,12 +30,13 @@ class UserInput():
     def __init__(self):
         seed(time.time)
         threading.Thread(target=self.moveMouseAction, args=[]).start()
-        with keyboard.Listener(on_press=onPress, on_release=onRelease, args=[]) as listener:
+        with keyboard.Listener(on_press=self.onPress, on_release=self.onRelease, args=[]) as listener:
             listener.join()
 
     def onPress(self, key):
         self.addKey(key)
         if(self.isMatchingCombination()):
+            self.currentlyPressedKeys.clear()
             if(self.isOn):
                 self.isOn = False
             else:
@@ -49,11 +46,15 @@ class UserInput():
         self.removeKey(key)
 
     def addKey(self, keyPressed):
-        if keyPressed in self.keyCombination:
-            self.currentlyPressedKeys.add(keyPressed)
+        if(keyPressed in self.currentlyPressedKeys):
+            return
+        if(keyPressed in self.keyCombination):
+            self.currentlyPressedKeys.append(keyPressed)
 
     def removeKey(self, keyPressed):
-        if keyPressed in self.keyCombination:
+        if(keyPressed in self.currentlyPressedKeys):
+            return
+        if(keyPressed in self.keyCombination):
             self.currentlyPressedKeys.remove(keyPressed)
 
     def isMatchingCombination(self):
@@ -79,16 +80,37 @@ class UserInput():
 
     def verticalPattern(self, hasMoved):
         if(hasMoved):
-            pg.moveRel(0, self.distance, duration=self.duration)
+            self.moveMouse(0, self.distance, self.duration)
         else:
-            pg.moveRel(0, -(self.distance), duration=self.duration)
+            self.moveMouse(0, -(self.distance), self.duration)
 
     def horizontalPattern(self, hasMoved):
         if(hasMoved):
-            pg.moveRel(self.distance, 0, duration=self.duration)
+            self.moveMouse(self.distance, 0, self.duration)
         else:
-            pg.moveRel(-(self.distance), 0, duration=self.duration)
+            self.moveMouse(-(self.distance), 0, self.duration)
 
     def randomPattern(self):
-        pg.sc
-        pg.moveRel(self.distance, 0, duration=self.duration)
+        # Without detecting screen size the random number will be generated based on an average of 2 Full Hd screens
+        screenHeight = 1080
+        screenWidth = 1920
+        x = random.randInt(0, screenWidth * 2)
+        y = random.randInt(0, screenHeight)
+        self.moveMouse(x, y, self.duration)
+
+    def moveMouse(self, x, y, duration=0.2):
+        sleepBetweenSteps = 0.05
+        stepsNumber = int(duration/sleepBetweenSteps)
+        stepX = int(x/stepsNumber)
+        stepY = int(y/stepsNumber)
+        startX, startY = self.mouseController.position
+
+        for step in range(stepsNumber):
+            self.mouseController.move(stepX, stepY)
+            currentX, currentY = self.mouseController.position
+            if(currentX == startX or currentX == startY):
+                return
+            time.sleep(sleepBetweenSteps)
+
+
+controller = UserInput()
