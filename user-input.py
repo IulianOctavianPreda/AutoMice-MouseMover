@@ -2,8 +2,8 @@ from pynput import keyboard, mouse
 
 import time
 import threading
-from random import seed
-from random import random
+import random
+import timeit
 from enum import Enum
 
 
@@ -12,37 +12,38 @@ class Pattern(Enum):
     Horizontal = 2
     Random = 3
 
-# TODO add timer for mouse movement, if the mouse was moved in the last x seconds do not trigger the automovement, or stop it if it was started
-# TODO if the pressed key is ctrl, shift, alt add all 3 versions of it to the list
-
 
 class UserInput():
     mouseController = mouse.Controller()
+    timer = time.time()
 
     keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(vk=65)}
     currentlyPressedKeys = set()
-    threadFlag = threading.Event()
+    isOn = False
 
     distance = 10
-    sleepTime = 1
+    waitTime = 5
     duration = 0.2
     patternSelected = Pattern.Horizontal
 
     def __init__(self):
-        seed(time.time)
-        threading.Thread(target=self.moveMouseAction, args=[]).start()
-        with keyboard.Listener(on_press=self.onPress, on_release=self.onRelease, args=[]) as listener:
-            listener.join()
+        random.seed(time.time)
+        with keyboard.Listener(on_press=self.onPress, on_release=self.onRelease, args=[]) as keyboardListener:
+            keyboardListener.join()
+        with mouse.Listener(on_move=self.onMove, args=[]) as mouseListener:
+            mouseListener.join()
+
+    def onMove(self):
+        self.timer = time.time()
 
     def onPress(self, key):
         self.addKey(self.get_vk(key))
         if(self.isMatchingCombination()):
-            if(self.threadFlag.is_set()):
-                print("off")
-                self.threadFlag.clear()
+            if(not self.isOn):
+                self.isOn = True
+                threading.Thread(target=self.moveMouseAction, args=[]).start()
             else:
-                print("on")
-                self.threadFlag.set()
+                self.isOn = False
 
     def onRelease(self, key):
         self.removeKey(self.get_vk(key))
@@ -60,12 +61,13 @@ class UserInput():
         return all(self.get_vk(k) in self.currentlyPressedKeys for k in self.keyCombination)
 
     def moveMouseAction(self):
-        print("thread")
         hasMoved = False
-        while self.threadFlag.is_set():
-            print("thread start")
-            self.patternMatcher(hasMoved)
-            time.sleep(self.sleepTime)
+        while self.isOn:
+            elapsedTime = time.time() - self.timer
+            if(elapsedTime > self.waitTime):
+                self.patternMatcher(hasMoved)
+                hasMoved = not hasMoved
+                time.sleep(self.waitTime - 1)
 
     def patternMatcher(self, hasMoved):
         if(self.patternSelected is Pattern.Horizontal):
@@ -74,7 +76,6 @@ class UserInput():
             self.verticalPattern(hasMoved)
         else:
             self.randomPattern()
-        hasMoved = not hasMoved
 
     def verticalPattern(self, hasMoved):
         if(hasMoved):
