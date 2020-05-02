@@ -69,11 +69,12 @@ class UserInput():
     def moveMouseAction(self):
         hasMoved = False
         while self.isOn:
-            elapsedTime = time.time() - self.timer
-            if(elapsedTime > self.waitTime):
+            if(self.inactiveTime > self.waitTime):
                 self.patternMatcher(hasMoved)
                 hasMoved = not hasMoved
-                time.sleep(self.waitTime - 1)
+                time.sleep(self.waitTime)
+            else:
+                time.sleep(self.waitTime - self.inactiveTime)
 
     def patternMatcher(self, hasMoved):
         if(self.patternSelected is Pattern.Horizontal):
