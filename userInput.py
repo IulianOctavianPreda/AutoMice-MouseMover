@@ -28,12 +28,18 @@ class UserInput():
 
     def __init__(self):
         random.seed(time.time)
-        with keyboard.Listener(on_press=self.onPress, on_release=self.onRelease, args=[]) as keyboardListener:
+
+    def addListeners(self):
+        keyboard.Listener(on_press=self.onPress,
+                          on_release=self.onRelease, args=[]).start()
+        mouse.Listener(on_move=self.onMove, args=[]).start()
+
+    def addListenersBlocking(self):
+        with keyboard.Listener(on_press=self.onPress, on_release=self.onRelease, args=[]) as keyboardListener, mouse.Listener(on_move=self.onMove, args=[]) as mouseListener:
             keyboardListener.join()
-        with mouse.Listener(on_move=self.onMove, args=[]) as mouseListener:
             mouseListener.join()
 
-    def onMove(self):
+    def onMove(self, x, y):
         self.timer = time.time()
 
     def onPress(self, key):
@@ -112,4 +118,6 @@ class UserInput():
             time.sleep(sleepBetweenSteps)
 
 
-controller = UserInput()
+if __name__ == "__main__":
+    controller = UserInput()
+    controller.addListenersBlocking()
