@@ -46,10 +46,16 @@ class UserInput():
         self.addKey(self.get_vk(key))
         if(self.isMatchingCombination()):
             if(not self.isOn):
-                self.isOn = True
-                threading.Thread(target=self.moveMouseAction, args=[]).start()
+                self.turnOn()
             else:
-                self.isOn = False
+                self.turnOff()
+
+    def turnOn(self):
+        self.isOn = True
+        threading.Thread(target=self.moveMouseAction, args=[]).start()
+
+    def turnOff(self):
+        self.isOn = False
 
     def onRelease(self, key):
         self.removeKey(self.get_vk(key))
