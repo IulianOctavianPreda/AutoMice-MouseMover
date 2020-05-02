@@ -10,7 +10,8 @@ class UserInput():
     mouseController = mouse.Controller()
     timer = time.time()
 
-    keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(vk=65)}
+    keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(vk=77)}
+
     currentlyPressedKeys = set()
     isOn = False
 
