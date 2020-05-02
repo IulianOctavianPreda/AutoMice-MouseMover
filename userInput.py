@@ -1,16 +1,9 @@
 from pynput import keyboard, mouse
-
+from enums.patterns import Pattern
 import time
 import threading
 import random
 import timeit
-from enum import Enum
-
-
-class Pattern(Enum):
-    Vertical = 1
-    Horizontal = 2
-    Random = 3
 
 
 class UserInput():
