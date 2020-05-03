@@ -1,15 +1,17 @@
 # MouseMover
 
-# Usage
+# Usage - No installation needed
 
 -   Download the archive
 -   Extract the executable
 -   Move it in your desired place
 -   Run the executable
 
-No installation needed.
+# Preview
 
-# Instructions
+![image](https://user-images.githubusercontent.com/33485041/80921902-0d805300-8d82-11ea-8b35-ce1b6da80df0.png)
+
+# Developer Instructions
 
 ## Requirements:
 
@@ -41,6 +43,6 @@ set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\um\x64;C:\Pro
 
 ```
 
-## Instructions
+### Instructions
 
 -   Run the batch file build-win.cmd
