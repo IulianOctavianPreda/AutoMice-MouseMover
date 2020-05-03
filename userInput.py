@@ -1,30 +1,42 @@
 from pynput import keyboard, mouse
-
+from enums.patterns import Pattern
+from enums.keysMapping import KeysMapping
 import time
 import threading
 import random
 import timeit
-from enum import Enum
+import copy
 
-
-class Pattern(Enum):
-    Vertical = 1
-    Horizontal = 2
-    Random = 3
+# TODO save user defined specs
 
 
 class UserInput():
     mouseController = mouse.Controller()
     timer = time.time()
+    keyMapping = {x.name: x.value for x in KeysMapping}
 
-    keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(vk=65)}
+    keyCombination = {KeysMapping.Left_Ctrl.value, 77}  # Ctrl_l + M
+
     currentlyPressedKeys = set()
     isOn = False
+    isChangingKeyCombination = False
+
+    sleepBetweenSteps = 0.05
 
     distance = 10
     waitTime = 5
     duration = 0.2
     patternSelected = Pattern.Horizontal
+
+    @property
+    def keyCombo(self):
+        keys = sorted([self.getCharacter(x)
+                       for x in self.keyCombination], key=len, reverse=True)
+        return ' + '.join(keys)
+
+    @property
+    def inactiveTime(self):
+        return time.time() - self.timer
 
     def __init__(self):
         random.seed(time.time)
@@ -43,25 +55,39 @@ class UserInput():
         self.timer = time.time()
 
     def onPress(self, key):
-        self.addKey(self.get_vk(key))
-        if(self.isMatchingCombination()):
-            if(not self.isOn):
-                self.turnOn()
-            else:
-                self.turnOff()
+        self.addKey(self.getVk(key))
+        if(not self.isChangingKeyCombination):
+            if(self.isMatchingCombination()):
+                if(not self.isOn):
+                    self.turnOn()
+                else:
+                    self.turnOff()
+        else:
+            self.keyCombination = copy.deepcopy(self.currentlyPressedKeys)
 
     def turnOn(self):
-        self.isOn = True
-        threading.Thread(target=self.moveMouseAction, args=[]).start()
+        if(not self.isOn):
+            self.isOn = True
+            threading.Thread(target=self.moveMouseAction, args=[]).start()
 
     def turnOff(self):
         self.isOn = False
 
     def onRelease(self, key):
-        self.removeKey(self.get_vk(key))
+        self.removeKey(self.getVk(key))
 
-    def get_vk(self, key):
+    def getVk(self, key):
         return key.vk if hasattr(key, 'vk') else key.value.vk
+
+    def getCharacter(self, code):
+        for name, value in self.keyMapping.items():
+            if code == value:
+                return self.snakeCaseToHuman(name)
+        else:
+            return chr(code)
+
+    def snakeCaseToHuman(self, string):
+        return string.replace('_', " ")
 
     def addKey(self, keyPressed):
         self.currentlyPressedKeys.add(keyPressed)
@@ -70,16 +96,17 @@ class UserInput():
         self.currentlyPressedKeys.remove(keyPressed)
 
     def isMatchingCombination(self):
-        return all(self.get_vk(k) in self.currentlyPressedKeys for k in self.keyCombination)
+        return all(k in self.currentlyPressedKeys for k in self.keyCombination)
 
     def moveMouseAction(self):
         hasMoved = False
         while self.isOn:
-            elapsedTime = time.time() - self.timer
-            if(elapsedTime > self.waitTime):
+            if(self.inactiveTime > self.waitTime):
                 self.patternMatcher(hasMoved)
                 hasMoved = not hasMoved
-                time.sleep(self.waitTime - 1)
+                time.sleep(self.waitTime)
+            else:
+                time.sleep(self.waitTime - self.inactiveTime)
 
     def patternMatcher(self, hasMoved):
         if(self.patternSelected is Pattern.Horizontal):
@@ -112,6 +139,10 @@ class UserInput():
     def moveMouse(self, x, y, duration=0.2):
         sleepBetweenSteps = 0.05
         stepsNumber = int(duration/sleepBetweenSteps)
+        maxSteps = self.max(x, y)
+        print(stepsNumber, duration, maxSteps, x, y)
+        if(stepsNumber > maxSteps):
+            stepsNumber = int(maxSteps)
         stepX = int(x/stepsNumber)
         stepY = int(y/stepsNumber)
         startX, startY = self.mouseController.position
@@ -122,6 +153,12 @@ class UserInput():
             if(currentX == startX or currentX == startY):
                 return
             time.sleep(sleepBetweenSteps)
+
+    def max(self, x, y):
+        if abs(x) > abs(y):
+            return abs(x)
+        else:
+            return abs(y)
 
 
 if __name__ == "__main__":
