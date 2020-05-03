@@ -1,24 +1,38 @@
 from pynput import keyboard, mouse
 from enums.patterns import Pattern
+from enums.keysMapping import KeysMapping
 import time
 import threading
 import random
 import timeit
+import copy
 
 
 class UserInput():
     mouseController = mouse.Controller()
     timer = time.time()
+    keyMapping = {x.name: x.value for x in KeysMapping}
 
-    keyCombination = {keyboard.Key.ctrl_l, keyboard.KeyCode(vk=77)}
+    keyCombination = {KeysMapping.Left_Ctrl.value, 77}  # Ctrl_l + M
 
     currentlyPressedKeys = set()
     isOn = False
+    isChangingKeyCombination = False
 
     distance = 10
     waitTime = 5
     duration = 0.2
     patternSelected = Pattern.Horizontal
+
+    @property
+    def keyCombo(self):
+        keys = sorted([self.getCharacter(x)
+                       for x in self.keyCombination], key=len, reverse=True)
+        return ' + '.join(keys)
+
+    @property
+    def inactiveTime(self):
+        return time.time() - self.timer
 
     def __init__(self):
         random.seed(time.time)
@@ -38,11 +52,14 @@ class UserInput():
 
     def onPress(self, key):
         self.addKey(self.get_vk(key))
-        if(self.isMatchingCombination()):
-            if(not self.isOn):
-                self.turnOn()
-            else:
-                self.turnOff()
+        if(not self.isChangingKeyCombination):
+            if(self.isMatchingCombination()):
+                if(not self.isOn):
+                    self.turnOn()
+                else:
+                    self.turnOff()
+        else:
+            self.keyCombination = copy.deepcopy(self.currentlyPressedKeys)
 
     def turnOn(self):
         if(not self.isOn):
@@ -58,6 +75,16 @@ class UserInput():
     def get_vk(self, key):
         return key.vk if hasattr(key, 'vk') else key.value.vk
 
+    def getCharacter(self, code):
+        for name, value in self.keyMapping.items():
+            if code == value:
+                return self.snakeCaseToHuman(name)
+        else:
+            return chr(code)
+
+    def snakeCaseToHuman(self, string):
+        return string.replace('_', " ")
+
     def addKey(self, keyPressed):
         self.currentlyPressedKeys.add(keyPressed)
 
@@ -65,7 +92,7 @@ class UserInput():
         self.currentlyPressedKeys.remove(keyPressed)
 
     def isMatchingCombination(self):
-        return all(self.get_vk(k) in self.currentlyPressedKeys for k in self.keyCombination)
+        return all(k in self.currentlyPressedKeys for k in self.keyCombination)
 
     def moveMouseAction(self):
         hasMoved = False
