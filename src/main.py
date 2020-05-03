@@ -136,3 +136,4 @@ while True:  # Event Loop
 
 window.close()
 removeTempIco()
+userInput.updateUserSettingsFile()

@@ -6,8 +6,7 @@ import threading
 import random
 import timeit
 import copy
-
-# TODO save user defined specs
+import os
 
 
 class UserInput():
@@ -40,6 +39,7 @@ class UserInput():
 
     def __init__(self):
         random.seed(time.time)
+        self.updateFromUserSettingsFile()
 
     def addListeners(self):
         keyboard.Listener(on_press=self.onPress,
@@ -159,7 +159,40 @@ class UserInput():
         else:
             return abs(y)
 
+    def updateUserSettingsFile(self):
+        f = open("MouseMoverSettings", "w+")
+        keyCombo = ','.join(str(s) for s in self.keyCombination)
+        data = f'distance={self.distance}\nwaitTime={self.waitTime}\nduration={self.duration}\npatternSelected={self.patternSelected.name}\nkeyCombination={keyCombo}'
+        f.write(data)
+        f.close()
+
+    def updateFromUserSettingsFile(self):
+        if os.path.isfile('MouseMoverSettings') and os.stat('MouseMoverSettings').st_size != 0:
+            f = open("MouseMoverSettings", "r")
+            data = f.read().strip()
+            d = dict(x.split("=") for x in data.split("\n"))
+            f.close()
+
+            if("distance" in d):
+                self.distance = int(d["distance"])
+            if("waitTime" in d):
+                self.waitTime = float(d["waitTime"])
+            if("duration" in d):
+                self.duration = float(d["duration"])
+            if("patternSelected" in d):
+                self.patternSelected = Pattern[d["patternSelected"]]
+            if("keyCombination" in d):
+                keyValues = d["keyCombination"].split(',')
+                s = set()
+                for item in keyValues:
+                    try:
+                        s.add(int(item))
+                    except:
+                        pass
+                self.keyCombination = copy.deepcopy(s)
+
 
 if __name__ == "__main__":
     controller = UserInput()
     controller.addListenersBlocking()
+    controller.updateUserSettingsFile()
