@@ -4,3 +4,7 @@
 **/venv
 **/build
 **/dist
+**/main.build
+**/main.dist
+python37.dll
+MouseMover.exe
