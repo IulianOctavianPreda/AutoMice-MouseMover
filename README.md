@@ -1,31 +1,31 @@
-# MouseMover
+# Mouse Mover
 
-# Usage - No installation needed
+## Usage - No installation needed
 
 -   Download the archive
 -   Extract the executable
 -   Move it in your desired place
 -   Run the executable
 
-# Preview
+## Preview
 
 ![image](https://user-images.githubusercontent.com/33485041/80921902-0d805300-8d82-11ea-8b35-ce1b6da80df0.png)
 
-# Developer Instructions
+## Developer Instructions
 
-## Requirements:
+### Requirements:
 
 -   At least python 3.7+
 
-## Run in the root folder in a terminal:
+### Run in the root folder in a terminal:
 
 -   `pip3 install -r requirements.txt`
 
-# Build
+## Build
 
-## Windows
+### Windows
 
-### Requirements
+#### Requirements
 
 -   Visual studio <version> - installed
 -   Build Tools for Visual Studio <version> - installed
@@ -43,6 +43,6 @@ set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\um\x64;C:\Pro
 
 ```
 
-### Instructions
+#### Instructions
 
 -   Run the batch file build-win.cmd
