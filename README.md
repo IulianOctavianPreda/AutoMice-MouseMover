@@ -1,5 +1,14 @@
 # MouseMover
 
+# Usage
+
+-   Download the archive
+-   Extract the executable
+-   Move it in your desired place
+-   Run the executable
+
+No installation needed.
+
 # Instructions
 
 ## Requirements:
@@ -28,7 +37,7 @@ Template:
 ```
 set INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\<build version>\ucrt
 set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\ucrt\x64
-"C:\Program Files (x86)\Microsoft Visual Studio\<version>\Community\VC\Auxiliary\Build\vcvars64.bat" && nuitka ./src/main.py  -o ./dist/MouseMover_Win_x86_x64.exe  --remove-output  --windows-icon=<repository path>/MouseMover/src/assets/ico.ico --windows-disable-console  --warn-unusual-code --assume-yes-for-downloads --follow-imports
+"C:\Program Files (x86)\Microsoft Visual Studio\<version>\Community\VC\Auxiliary\Build\vcvars64.bat" && nuitka ./src/main.py  -o ./dist/MouseMover_Windows_x86_x64.exe  --remove-output  --windows-icon=<repository path>/MouseMover/src/assets/ico.ico --windows-disable-console  --warn-unusual-code --assume-yes-for-downloads --follow-imports
 
 ```
 
