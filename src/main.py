@@ -6,6 +6,7 @@ patterns = [{"key": "Pattern" + str(x.value), "value": x}
             for x in Pattern]
 userInput = UserInput()
 userInput.addListeners()
+oldValues = None
 
 
 def updatePattern(value):
@@ -62,9 +63,7 @@ layout = [
     [sg.Text('Movement pattern:')] + [sg.Radio(pattern.name, "radio_group1",
                                                key="Pattern" + str(pattern.value)) for pattern in Pattern],
     [sg.Text('Current inactive time:', size=(20, 1)),
-     sg.Text(size=(20, 1), key='InactiveTime'),
-     sg.Button(button_color=("white", "black"),
-               button_text="Update values",  key='Update')
+     sg.Text(size=(20, 1), key='InactiveTime')
      ],
     [sg.Text(size=(20, 1)),
      sg.Text(size=(20, 1),),
@@ -81,6 +80,7 @@ window['Distance'].update(userInput.distance)
 window['WaitTime'].update(userInput.waitTime)
 window['Duration'].update(userInput.duration)
 updatePattern(userInput.patternSelected)
+
 
 while True:  # Event Loop
     event, values = window.read(timeout=10)
@@ -100,7 +100,7 @@ while True:  # Event Loop
     if(userInput.isChangingKeyCombination):
         window['KeyCombination'].update(userInput.keyCombo)
 
-    if event == 'Update':
+    if oldValues != values:
         updateValues(values)
 
     if event == 'ChangeCombination':
