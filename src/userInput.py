@@ -140,7 +140,6 @@ class UserInput():
         sleepBetweenSteps = 0.05
         stepsNumber = int(duration/sleepBetweenSteps)
         maxSteps = self.max(x, y)
-        print(stepsNumber, duration, maxSteps, x, y)
         if(stepsNumber > maxSteps):
             stepsNumber = int(maxSteps)
         stepX = int(x/stepsNumber)
