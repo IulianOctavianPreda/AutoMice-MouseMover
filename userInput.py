@@ -7,6 +7,8 @@ import random
 import timeit
 import copy
 
+# TODO save user defined specs
+
 
 class UserInput():
     mouseController = mouse.Controller()
@@ -18,6 +20,8 @@ class UserInput():
     currentlyPressedKeys = set()
     isOn = False
     isChangingKeyCombination = False
+
+    sleepBetweenSteps = 0.05
 
     distance = 10
     waitTime = 5
@@ -51,7 +55,7 @@ class UserInput():
         self.timer = time.time()
 
     def onPress(self, key):
-        self.addKey(self.get_vk(key))
+        self.addKey(self.getVk(key))
         if(not self.isChangingKeyCombination):
             if(self.isMatchingCombination()):
                 if(not self.isOn):
@@ -70,9 +74,9 @@ class UserInput():
         self.isOn = False
 
     def onRelease(self, key):
-        self.removeKey(self.get_vk(key))
+        self.removeKey(self.getVk(key))
 
-    def get_vk(self, key):
+    def getVk(self, key):
         return key.vk if hasattr(key, 'vk') else key.value.vk
 
     def getCharacter(self, code):
@@ -135,6 +139,10 @@ class UserInput():
     def moveMouse(self, x, y, duration=0.2):
         sleepBetweenSteps = 0.05
         stepsNumber = int(duration/sleepBetweenSteps)
+        maxSteps = self.max(x, y)
+        print(stepsNumber, duration, maxSteps, x, y)
+        if(stepsNumber > maxSteps):
+            stepsNumber = int(maxSteps)
         stepX = int(x/stepsNumber)
         stepY = int(y/stepsNumber)
         startX, startY = self.mouseController.position
@@ -145,6 +153,12 @@ class UserInput():
             if(currentX == startX or currentX == startY):
                 return
             time.sleep(sleepBetweenSteps)
+
+    def max(self, x, y):
+        if abs(x) > abs(y):
+            return abs(x)
+        else:
+            return abs(y)
 
 
 if __name__ == "__main__":

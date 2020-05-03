@@ -16,8 +16,29 @@ def updatePattern(value):
             window[pattern["key"]].update(False)
 
 
-def time_as_int(time):
+def timeAsInt(time):
     return int(round(time * 100))
+
+
+def updateValues(values):
+    try:
+        userInput.distance = int(values['Distance'])
+    except:
+        window['Distance'].update(userInput.distance)
+
+    try:
+        window['Duration'].update(userInput.duration)
+    except:
+        userInput.duration = float(values['Duration'])
+
+    try:
+        userInput.waitTime = float(values['WaitTime'])
+    except:
+        window['WaitTime'].update(userInput.waitTime)
+
+    for pattern in patterns:
+        if values[pattern["key"]]:
+            userInput.patternSelected = pattern["value"]
 
 
 sg.theme('DarkBlue')
@@ -60,7 +81,6 @@ window['Distance'].update(userInput.distance)
 window['WaitTime'].update(userInput.waitTime)
 window['Duration'].update(userInput.duration)
 updatePattern(userInput.patternSelected)
-window["WaitTime"].Widget.config(takefocus=1)
 
 while True:  # Event Loop
     event, values = window.read(timeout=10)
@@ -70,10 +90,10 @@ while True:  # Event Loop
 
     if(userInput.isOn):
         window['StartStop'].update("Stop")
-        window['InactiveTime'].update('{:02d}:{:02d}.{:02d}'.format((time_as_int(userInput.inactiveTime) // 100) // 60,
-                                                                    (time_as_int(
+        window['InactiveTime'].update('{:02d}:{:02d}.{:02d}'.format((timeAsInt(userInput.inactiveTime) // 100) // 60,
+                                                                    (timeAsInt(
                                                                         userInput.inactiveTime) // 100) % 60,
-                                                                    time_as_int(userInput.inactiveTime) % 100))
+                                                                    timeAsInt(userInput.inactiveTime) % 100))
     else:
         window['StartStop'].update("Start")
 
@@ -81,12 +101,7 @@ while True:  # Event Loop
         window['KeyCombination'].update(userInput.keyCombo)
 
     if event == 'Update':
-        userInput.distance = float(values['Distance'])
-        userInput.waitTime = float(values['WaitTime'])
-        userInput.duration = float(values['Duration'])
-        for pattern in patterns:
-            if values[pattern["key"]]:
-                userInput.patternSelected = pattern["value"]
+        updateValues(values)
 
     if event == 'ChangeCombination':
         if(userInput.isChangingKeyCombination):
