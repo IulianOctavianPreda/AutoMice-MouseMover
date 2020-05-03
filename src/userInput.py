@@ -169,18 +169,32 @@ class UserInput():
     def updateFromUserSettingsFile(self):
         if os.path.isfile('MouseMoverSettings') and os.stat('MouseMoverSettings').st_size != 0:
             f = open("MouseMoverSettings", "r")
-            data = f.read().strip()
-            d = dict(x.split("=") for x in data.split("\n"))
+            data = f.readlines()
+            curatedData = [line.strip()
+                           for line in data if line.strip() != "" and '=' in line]
+            d = dict(x.split("=") for x in curatedData)
             f.close()
 
             if("distance" in d):
-                self.distance = int(d["distance"])
+                try:
+                    self.distance = int(d["distance"])
+                except:
+                    pass
             if("waitTime" in d):
-                self.waitTime = float(d["waitTime"])
+                try:
+                    self.waitTime = float(d["waitTime"])
+                except:
+                    pass
             if("duration" in d):
-                self.duration = float(d["duration"])
+                try:
+                    self.duration = float(d["duration"])
+                except:
+                    pass
             if("patternSelected" in d):
-                self.patternSelected = Pattern[d["patternSelected"]]
+                try:
+                    self.patternSelected = Pattern[d["patternSelected"]]
+                except:
+                    pass
             if("keyCombination" in d):
                 keyValues = d["keyCombination"].split(',')
                 s = set()
