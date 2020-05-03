@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 from userInput import UserInput
 from enums.patterns import Pattern
-from ico import ico
+from icons.ico import ico
 import base64
 import os
 
