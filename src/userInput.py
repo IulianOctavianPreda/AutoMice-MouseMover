@@ -6,8 +6,7 @@ import threading
 import random
 import timeit
 import copy
-
-# TODO save user defined specs
+import os
 
 
 class UserInput():
@@ -40,6 +39,7 @@ class UserInput():
 
     def __init__(self):
         random.seed(time.time)
+        self.updateFromUserSettingsFile()
 
     def addListeners(self):
         keyboard.Listener(on_press=self.onPress,
@@ -129,11 +129,8 @@ class UserInput():
             self.moveMouse(-(self.distance), 0, self.duration)
 
     def randomPattern(self):
-        # Without detecting screen size the random number will be generated in a window of 500x500 relative to the mouse position
-        screenHeight = 500
-        screenWidth = 500
-        x = random.randint(-screenWidth, screenWidth)
-        y = random.randint(-screenHeight, screenHeight)
+        x = random.randint(-(self.distance), self.distance)
+        y = random.randint(-(self.distance), self.distance)
         self.moveMouse(x, y, self.duration)
 
     def moveMouse(self, x, y, duration=0.2):
@@ -159,7 +156,54 @@ class UserInput():
         else:
             return abs(y)
 
+    def updateUserSettingsFile(self):
+        f = open("MouseMoverSettings", "w+")
+        keyCombo = ','.join(str(s) for s in self.keyCombination)
+        data = f'distance={self.distance}\nwaitTime={self.waitTime}\nduration={self.duration}\npatternSelected={self.patternSelected.name}\nkeyCombination={keyCombo}'
+        f.write(data)
+        f.close()
+
+    def updateFromUserSettingsFile(self):
+        if os.path.isfile('MouseMoverSettings') and os.stat('MouseMoverSettings').st_size != 0:
+            f = open("MouseMoverSettings", "r")
+            data = f.readlines()
+            curatedData = [line.strip()
+                           for line in data if line.strip() != "" and '=' in line]
+            d = dict(x.split("=") for x in curatedData)
+            f.close()
+
+            if("distance" in d):
+                try:
+                    self.distance = int(d["distance"])
+                except:
+                    pass
+            if("waitTime" in d):
+                try:
+                    self.waitTime = float(d["waitTime"])
+                except:
+                    pass
+            if("duration" in d):
+                try:
+                    self.duration = float(d["duration"])
+                except:
+                    pass
+            if("patternSelected" in d):
+                try:
+                    self.patternSelected = Pattern[d["patternSelected"]]
+                except:
+                    pass
+            if("keyCombination" in d):
+                keyValues = d["keyCombination"].split(',')
+                s = set()
+                for item in keyValues:
+                    try:
+                        s.add(int(item))
+                    except:
+                        pass
+                self.keyCombination = copy.deepcopy(s)
+
 
 if __name__ == "__main__":
     controller = UserInput()
     controller.addListenersBlocking()
+    controller.updateUserSettingsFile()

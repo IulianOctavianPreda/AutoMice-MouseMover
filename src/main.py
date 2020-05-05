@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 from userInput import UserInput
 from enums.patterns import Pattern
-from ico import ico
+from icons.ico import ico
 import base64
 import os
 
@@ -44,9 +44,9 @@ def updateValues(values):
         window['Distance'].update(userInput.distance)
 
     try:
-        window['Duration'].update(userInput.duration)
-    except:
         userInput.duration = float(values['Duration'])
+    except:
+        window['Duration'].update(userInput.duration)
 
     try:
         userInput.waitTime = float(values['WaitTime'])
@@ -136,3 +136,4 @@ while True:  # Event Loop
 
 window.close()
 removeTempIco()
+userInput.updateUserSettingsFile()
