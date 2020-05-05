@@ -129,11 +129,8 @@ class UserInput():
             self.moveMouse(-(self.distance), 0, self.duration)
 
     def randomPattern(self):
-        # Without detecting screen size the random number will be generated in a window of 500x500 relative to the mouse position
-        screenHeight = 500
-        screenWidth = 500
-        x = random.randint(-screenWidth, screenWidth)
-        y = random.randint(-screenHeight, screenHeight)
+        x = random.randint(-(self.distance), self.distance)
+        y = random.randint(-(self.distance), self.distance)
         self.moveMouse(x, y, self.duration)
 
     def moveMouse(self, x, y, duration=0.2):
