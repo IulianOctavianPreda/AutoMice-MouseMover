@@ -36,12 +36,26 @@
 
 Template:
 
+-   64-bit
+
 ```
 set INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\<build version>\ucrt
 set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\ucrt\x64
-"C:\Program Files (x86)\Microsoft Visual Studio\<version>\Community\VC\Auxiliary\Build\vcvars64.bat" && nuitka ./src/main.py  -o ./dist/MouseMover_Windows_x86_x64.exe  --remove-output  --windows-icon=<repository path>/MouseMover/src/assets/ico.ico --windows-disable-console  --warn-unusual-code --assume-yes-for-downloads --follow-imports
+"C:\Program Files (x86)\Microsoft Visual Studio\<version>\Community\VC\Auxiliary\Build\vcvars64.bat" && nuitka ./src/main.py  -o ./dist/MouseMover_Windows_x64.exe  --remove-output  --windows-icon=<repository path>/MouseMover/src/assets/ico.ico --windows-disable-console  --warn-unusual-code --assume-yes-for-downloads --follow-imports --python-arch="x64"
 
 ```
+
+-   32-bit
+
+```
+set INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\<build version>\ucrt
+set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\<build version>\ucrt\x64
+"C:\Program Files (x86)\Microsoft Visual Studio\<version>\Community\VC\Auxiliary\Build\vcvars32.bat" && nuitka ./src/main.py  -o ./dist/MouseMover_Windows_x86.exe  --remove-output  --windows-icon=<repository path>/MouseMover/src/assets/ico.ico --windows-disable-console  --warn-unusual-code --assume-yes-for-downloads --follow-imports --python-arch="x86"
+
+```
+
+If you have more than one python installations you have to specify the path to it. Also each instllation has to have it's own Nuitka installed.
+Alternatively more virtual environments can be used.
 
 #### Instructions
 

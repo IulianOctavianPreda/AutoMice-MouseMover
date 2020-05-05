@@ -1,0 +1,3 @@
+set INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt
+set LIB=C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\x64
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat" && <python 32bit path>/Scripts/nuitka ./src/main.py  -o ./dist/MouseMover_Windows_x86.exe  --remove-output --windows-icon=D:/github/MouseMover/src/assets/ico.ico --windows-disable-console  --warn-unusual-code --assume-yes-for-downloads --follow-imports --python-arch="x86"
