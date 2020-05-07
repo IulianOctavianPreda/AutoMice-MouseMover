@@ -3,7 +3,7 @@
 **/Thumbs.db
 **/venv
 **/build
-**/MouseMoverData
+**/dist
 **/main.build
 **/main.dist
 python37.dll
