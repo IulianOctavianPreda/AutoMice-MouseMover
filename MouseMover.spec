@@ -5,8 +5,8 @@ block_cipher = None
 
 a = Analysis(['src\\main.py'],
              pathex=['Y:\\github\\MouseMover'],
-             binaries=[],
-             datas=[('src/assets/ico.ico', './assets/')],
+             binaries=[('C:/Program Files (x86)/Windows Kits/10/Redist/ucrt/DLLs', 'lib')],
+             datas=[('./src/assets/ico.ico', './assets/')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],

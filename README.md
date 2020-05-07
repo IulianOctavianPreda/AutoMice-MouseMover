@@ -23,13 +23,26 @@
 
 ## Build
 
-### Windows
-
-#### Requirements
+### Requirements
 
 -   Python 3.7+ - installed and added to path
 -   requiements.txt - installed
+-
 
-#### Instructions
+### Instructions
 
--   Run the batch file build-win.bat
+-   run `python build.py` or `python3 build.py`
+
+### Special mentions
+
+#### Windows
+
+-   Windows 10 SDK should be installed
+
+#### Linux
+
+-   Build on both x86 and x64 architectures using different OS installations
+
+#### MacOs
+
+-   Build for both architectures using different versions of Python(one for 32 bits and one for 64 bits)

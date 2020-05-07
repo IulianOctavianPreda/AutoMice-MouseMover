@@ -9,10 +9,9 @@ shortcutPath = "./systemShortcuts"
 system = platform.system()
 
 command = [
-    '--name=%s' % packageName,
+    f'--name={packageName}',
     '--noconfirm',
     '--onedir',
-    '--add-data=src/assets/ico.ico;./assets/',
 ]
 
 
@@ -40,13 +39,17 @@ def moveTree(src, dest):
 
 if __name__ == "__main__":
     if system == "Linux":
-        pass
+        command.append('--add-data=./src/assets/ico.ico:./assets/')
     elif system == "Windows":
         command.append('--windowed')
         command.append('--icon=./src/assets/ico.ico')
+        command.append('--add-data=./src/assets/ico.ico;./assets/')
+        command.append(
+            '--add-binary=C:/Program Files (x86)/Windows Kits/10/Redist/ucrt/DLLs;lib')
     elif system == "Darwin":
         command.append('--windowed')
         command.append('--icon=./src/assets/ico.icns')
+        command.append('--add-data=./src/assets/ico.ico:./assets/')
 
     command.append('src/main.py')
 

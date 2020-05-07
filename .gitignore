@@ -6,4 +6,5 @@
 **/dist
 **/main.build
 **/main.dist
-python37.dll
+**/.Trash-0
+MouseMover.spec
