@@ -1,7 +1,6 @@
 import PySimpleGUI as sg
 from userInput import UserInput
 from enums.patterns import Pattern
-from icons.ico import ico
 import base64
 import os
 
@@ -10,19 +9,6 @@ patterns = [{"key": "Pattern" + str(x.value), "value": x}
 userInput = UserInput()
 userInput.addListeners()
 oldValues = None
-
-tempIconFile = "ico.ico"
-
-
-def createTempIco():
-    icondata = base64.b64decode(ico)
-    iconfile = open(tempIconFile, "wb")
-    iconfile.write(icondata)
-    iconfile.close()
-
-
-def removeTempIco():
-    os.remove(tempIconFile)
 
 
 def updatePattern(value):
@@ -88,8 +74,8 @@ layout = [
      ]
 ]
 
-createTempIco()
-window = sg.Window('Mouse Mover', layout, icon=tempIconFile, finalize=True)
+window = sg.Window('Mouse Mover', layout,
+                   icon="./assets/ico.ico", finalize=True)
 window.read(timeout=10)
 window['KeyCombination'].update(userInput.keyCombo)
 window['Distance'].update(userInput.distance)
@@ -135,5 +121,4 @@ while True:  # Event Loop
 
 
 window.close()
-removeTempIco()
 userInput.updateUserSettingsFile()
