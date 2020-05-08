@@ -25,15 +25,25 @@
 
 ### Requirements
 
--   Python 3.7+ - installed and added to path
+-   Python 3.7+(32 bit, optionally 64 bit) - installed and added to path
 -   requiements.txt - installed
--
 
 ### Instructions
 
 -   run `python build.py` or `python3 build.py`
 
 ### Special mentions
+
+-   If the "shortcuts" / executables are not created, compile them with `gcc MouseMover.cpp -o MouseMover -mwindows` for Windows and `gcc MouseMover.cpp -o MouseMover` for Linux. Optionally add the architecture in the name too.
+
+Examples to compile for different architectures:
+
+-   Windows:<br/> `gcc MouseMover.cpp -o Windows/MouseMover_x86 -mwindows -m32` <br/> `gcc MouseMover.cpp -o Windows/MouseMover_x64 -mwindows -m64`
+
+-   Linux: <br/> `gcc MouseMover.cpp -o Linux/MouseMover_x86 -m32` <br/> `gcc MouseMover.cpp -o Linux/MouseMover_x64 -m64`
+
+For linux you might need to run the command: `sudo apt-get install g++-multilib`
+To add icons for the Windows executables you can use ResourceHacker.
 
 #### Windows
 
