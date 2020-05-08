@@ -1,11 +1,27 @@
 # Mouse Mover
 
+## Features:
+
+-   Mouse auto-movement after a period of inactivity
+-   Multiple movement patterns
+-   Changeable start/stop key combination
+-   Adjustable parameter as time, distance
+-   Friendly GUI
+
 ## Usage - No installation needed
 
 -   Download the archive
 -   Extract the executable
--   Move it in your desired place
+-   Move it to your desired place
 -   Run the executable
+
+## Remarks
+
+For windows:  
+If you don't know what type of architecture your system uses (32-bit/x86 or 64-bit/x64), download the x86 version as it is compatible with both of them.
+
+For both Linux and Windows:  
+If for any reason the executable placed in the root folder doesn't work as expected, you can use a different executable that can be found in "MouseMoverData" folder. The executable in the root folder serves as a shortcut to the real one.
 
 ## Preview
 
