@@ -1,6 +1,6 @@
 # Mouse Mover
 AutoMice(Automize?) is a free, no installation required, no admin right s required, user-friendly mouse auto-mover to keep your desktop active.
-
+The latest version can always be downloaded from [here](https://github.com/IulianOctavianPreda/AutoMice-MouseMover/releases)
 ## Features:
 
 -   Mouse auto-movement after a period of inactivity
