@@ -22,7 +22,7 @@ jobs:
           draft: false
           prerelease: false
       - shell: bash
-          run: ${{ steps.create_release.outputs.upload_url }} > release_upload_url.txt
+          run: `${{ steps.create_release.outputs.upload_url }}` > release_upload_url.txt
       - name: Upload release url
           uses: actions/upload-artifact@v1
           with:
