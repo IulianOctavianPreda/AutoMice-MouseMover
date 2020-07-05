@@ -1,0 +1,71 @@
+name: Release
+
+on:
+    push:
+      # Sequence of patterns matched against refs/tags
+      tags:
+        - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  
+jobs:
+    create_release:
+        name: Create Release
+        runs-on: ubuntu-latest
+        steps:
+          - name: Create Release
+            id: create_release
+            uses: actions/create-release@v1
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+            with:
+              tag_name: ${{ github.ref }}
+              release_name: Release ${{ github.ref }}
+              draft: false
+              prerelease: false
+          - shell: bash
+            run: ${{ steps.create_release.outputs.upload_url }} > release_upload_url.txt
+          - name: Upload release url
+            uses: actions/upload-artifact@v1
+            with:
+                name: release_url
+                path: release_upload_url.txt
+  
+    build_release:
+        name: Build and Release
+        runs-on: ${{matrix.os}}
+        needs: [create_release]
+        strategy:
+            matrix:
+              python-version: [3.7]
+              os: [ubuntu-latest, windows-latest, macos-latest]
+
+        steps:
+          - name: Download release url
+            uses: actions/download-artifact@v1
+            with:
+                name: release_url
+          - shell: bash
+            run: |
+                export release_url=`cat release_url/release_upload_url.txt`
+                echo "::set-env name=release_url::$release_url" 
+
+          - uses: actions/checkout@v2
+          - name: Set up Python ${{ matrix.python-version }}
+            uses: actions/setup-python@v2
+            with:
+                  python-version: ${{ matrix.python-version }}
+          - name: Install dependencies
+            run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+          - name: Build
+            run: python ./build-release.py
+
+          - name: Upload Release Asset
+            id: upload_release_asset 
+            uses: actions/upload-release-asset@v1
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            with:
+                upload_url: $release_url # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+                asset_path: dist/*.zip
+                asset_content_type: application/zip
