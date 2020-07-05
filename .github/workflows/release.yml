@@ -18,11 +18,11 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
             with:
               tag_name: ${{ github.ref }}
-              release_name: Release ${{ github.ref }}
+              release_name: Automice - MouseMover ${{ github.ref }}
               draft: false
               prerelease: false
           - shell: bash
-            run: ${{ steps.create_release.outputs.upload_url }} > release_upload_url.txt
+            run: echo ${{ steps.create_release.outputs.upload_url }} > release_upload_url.txt
           - name: Upload release url
             uses: actions/upload-artifact@v1
             with:
