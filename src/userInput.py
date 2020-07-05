@@ -55,6 +55,7 @@ class UserInput():
         self.timer = time.time()
 
     def onPress(self, key):
+        self.timer = time.time()
         self.addKey(self.getVk(key))
         if(not self.isChangingKeyCombination):
             if(self.isMatchingCombination()):
