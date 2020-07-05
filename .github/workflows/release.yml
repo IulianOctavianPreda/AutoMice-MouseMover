@@ -47,7 +47,7 @@ jobs:
             run: |
                 export release_url=`cat release_url/release_upload_url.txt`
                 echo "::set-env name=release_url::$release_url" 
-
+                
           - uses: actions/checkout@v2
           - name: Set up Python ${{ matrix.python-version }}
             uses: actions/setup-python@v2
@@ -58,7 +58,10 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install -r requirements.txt
           - name: Build
-            run: python ./build-release.py
+            run: |
+                python ./build-release.py
+                echo package_name=$(ls /dist/*.zip| head -1)
+                echo "::set-env name=package_name::$package_name" 
 
           - name: Upload Release Asset
             id: upload_release_asset 
@@ -68,4 +71,5 @@ jobs:
             with:
                 upload_url: $release_url # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
                 asset_path: dist/*.zip
+                asset_name: $package_name
                 asset_content_type: application/zip
