@@ -61,9 +61,10 @@ jobs:
             run: python ./build-release.py
             
           - name: Get package name  
+            shell: bash
             run: |
-                echo package_path=$(ls dist/*.zip| head -1)
-                echo package_name=$(echo $package_path | cut -d'/' -f 2)
+                export package_path=`ls dist/*.zip| head -1`
+                export package_name=`echo $package_path | cut -d'/' -f 2`
                 echo "::set-env name=package_path::$package_path" 
                 echo "::set-env name=package_name::$package_name" 
 
