@@ -62,7 +62,9 @@ jobs:
             
           - name: Get package name  
             run: |
-                echo package_name=$(ls dist/*.zip| head -1)
+                echo package_path=$(ls dist/*.zip| head -1)
+                echo package_name=$(echo $package_path | cut -d'/' -f 2)
+                echo "::set-env name=package_path::$package_path" 
                 echo "::set-env name=package_name::$package_name" 
 
           - name: Upload Release Asset
@@ -72,6 +74,6 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             with:
                 upload_url: $release_url
-                asset_path: dist/*.zip
+                asset_path: $package_path
                 asset_name: $package_name
                 asset_content_type: application/zip
