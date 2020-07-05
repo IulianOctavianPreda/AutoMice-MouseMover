@@ -24,7 +24,10 @@ class Build:
             self.architectureName = "x86"
         else:
             self.architectureName = "x64"
-        self.packageName = f'{self.distPath}/{self.system}_{self.architectureName}'
+        if self.system == "Darwin":
+            self.packageName = f'{self.distPath}/MacOS_{self.architectureName}'
+        else:
+            self.packageName = f'{self.distPath}/{self.system}_{self.architectureName}'
 
     def copyTree(self, src, dst, symlinks=False, ignore=None):
         for item in os.listdir(src):
