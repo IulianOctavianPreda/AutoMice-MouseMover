@@ -43,7 +43,8 @@ jobs:
             uses: actions/download-artifact@v1
             with:
                 name: release_url
-          - shell: bash
+          - name: Get release url
+            shell: bash
             run: |
                 export release_url=`cat release_url/release_upload_url.txt`
                 echo "::set-env name=release_url::$release_url" 
@@ -62,6 +63,7 @@ jobs:
             run: python ./build-release.py
             
           - name: Get package name and path
+            shell: bash
             run: |
                 export package_path=`ls dist/*.zip| head -1`
                 export package_name=`echo $package_path | cut -d'/' -f 2`
