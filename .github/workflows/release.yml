@@ -70,7 +70,7 @@ jobs:
                 
           - name: Rename artifact
             run: |
-                mv $package_path artifact.zip
+                mv $package_path ./artifact.zip
                 
           - name: Upload Release Asset
             id: upload_release_asset 
