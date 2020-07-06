@@ -60,23 +60,25 @@ jobs:
           - name: Build
             run: python ./build-release.py
             
+
           - name: Get package name  
             run: |
                 export package_path=`ls dist/*.zip| head -1`
                 export package_name=`echo $package_path | cut -d'/' -f 2`
                 echo "::set-env name=package_path::$package_path" 
                 echo "::set-env name=package_name::$package_name" 
-
+                
+          - name: Rename artifact
+            run: |
+                mv $package_path artifact.zip
+                
           - name: Upload Release Asset
             id: upload_release_asset 
             uses: actions/upload-release-asset@v1
             env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             with:
-                upload_url: | 
-                    `${ $release_url }`
-                asset_path: |
-                    `${ $package_path }`
-                asset_name: |
-                    `${ $package_name }`
+                upload_url: $release_url
+                asset_path: ./artifact.zip
+                asset_name: $package_name
                 asset_content_type: application/zip
