@@ -44,14 +44,24 @@ class UserInput():
     def addListeners(self):
         keyboard.Listener(on_press=self.onPress,
                           on_release=self.onRelease, args=[]).start()
-        mouse.Listener(on_move=self.onMove, args=[]).start()
+        mouse.Listener(on_move=self.onMove, on_click=self.onClick,
+                       on_scroll=self.onScroll, args=[]).start()
 
     def addListenersBlocking(self):
-        with keyboard.Listener(on_press=self.onPress, on_release=self.onRelease, args=[]) as keyboardListener, mouse.Listener(on_move=self.onMove, args=[]) as mouseListener:
+        with keyboard.Listener(on_press=self.onPress, on_release=self.onRelease, args=[]) as keyboardListener, mouse.Listener(on_move=self.onMove, on_click=self.onClick, on_scroll=self.onScroll, args=[]) as mouseListener:
             keyboardListener.join()
             mouseListener.join()
 
     def onMove(self, x, y):
+        self.resetTimer()
+
+    def onScroll(self, x, y, dx, dy):
+        self.resetTimer()
+
+    def onClick(self, x, y, button, pressed):
+        self.resetTimer()
+
+    def resetTimer(self):
         self.timer = time.time()
 
     def onPress(self, key):
