@@ -1,6 +1,6 @@
 # This workflow will install Python dependencies and build the project
 
-name: Build
+name: Build Release Version
 
 on:
     push:
