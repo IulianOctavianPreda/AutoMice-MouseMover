@@ -27,10 +27,10 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install -r requirements.txt
             - name: Build
-              run: python ./build.py
+              run: python ./build-release.py
 
             - name: Upload a Build Artifact
               uses: actions/upload-artifact@v2
               with:
                   name: ${{matrix.os}}
-                  path: dist/*
+                  path: dist/*.zip
